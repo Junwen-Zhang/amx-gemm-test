@@ -1,0 +1,127 @@
+.macro PACKB_N64K8
+  // 加载数据，K8
+  leaq    (%%r10, %%rsi, 1), %%r11
+  leaq    (%%r11, %%rsi, 1), %%r12
+  leaq    (%%r12, %%rsi, 1), %%r13
+  vmovups (%%r10), %%zmm0
+  vmovups (%%r11), %%zmm1
+  vmovups (%%r12), %%zmm2
+  vmovups (%%r13), %%zmm3
+  leaq    (%%r13, %%rsi, 1), %%r10
+  leaq    (%%r10, %%rsi, 1), %%r11
+  leaq    (%%r11, %%rsi, 1), %%r12
+  leaq    (%%r12, %%rsi, 1), %%r13
+  vmovups (%%r10), %%zmm16
+  vmovups (%%r11), %%zmm17
+  vmovups (%%r12), %%zmm18
+  vmovups (%%r13), %%zmm19
+  leaq    (%%r13, %%rsi, 1), %%r10
+
+  // 交错数据，K4
+  vpunpcklbw  %%zmm1, %%zmm0, %%zmm4
+  vpunpckhbw  %%zmm1, %%zmm0, %%zmm5
+  vpunpcklbw  %%zmm3, %%zmm2, %%zmm6
+  vpunpckhbw  %%zmm3, %%zmm2, %%zmm7
+
+  vpunpcklwd  %%zmm6, %%zmm4, %%zmm8
+  vpunpckhwd  %%zmm6, %%zmm4, %%zmm9
+  vpunpcklwd  %%zmm7, %%zmm5, %%zmm10
+  vpunpckhwd  %%zmm7, %%zmm5, %%zmm11
+
+  vextracti32x4   $0x1, %%zmm8, %%xmm12
+  vextracti32x4   $0x1, %%zmm9, %%xmm13
+  vextracti32x4   $0x1, %%zmm10, %%xmm14
+  vextracti32x4   $0x1, %%zmm11, %%xmm15
+  vinserti32x4    $0x1, %%xmm13, %%zmm12, %%zmm12
+  vinserti32x4    $0x2, %%xmm14, %%zmm12, %%zmm12
+  vinserti32x4    $0x3, %%xmm15, %%zmm12, %%zmm12
+  vmovups         %%zmm12, 1024(%%rcx)
+
+  vextracti32x4   $0x2, %%zmm8, %%xmm4
+  vextracti32x4   $0x2, %%zmm9, %%xmm5
+  vextracti32x4   $0x2, %%zmm10, %%xmm6
+  vextracti32x4   $0x2, %%zmm11, %%xmm7
+  vinserti32x4    $0x1, %%xmm5, %%zmm4, %%zmm4
+  vinserti32x4    $0x2, %%xmm6, %%zmm4, %%zmm4
+  vinserti32x4    $0x3, %%xmm7, %%zmm4, %%zmm4
+  vmovups         %%zmm4, 2048(%%rcx)
+
+  vextracti32x4   $0x3, %%zmm8, %%xmm0
+  vextracti32x4   $0x3, %%zmm9, %%xmm1
+  vextracti32x4   $0x3, %%zmm10, %%xmm2
+  vextracti32x4   $0x3, %%zmm11, %%xmm3
+  vinserti32x4    $0x1, %%xmm1, %%zmm0, %%zmm0
+  vinserti32x4    $0x2, %%xmm2, %%zmm0, %%zmm0
+  vinserti32x4    $0x3, %%xmm3, %%zmm0, %%zmm0
+  vmovups         %%zmm0, 3072(%%rcx)
+
+  vinserti32x4    $0x1, %%xmm9, %%zmm8, %%zmm8
+  vinserti32x4    $0x2, %%xmm10, %%zmm8, %%zmm8
+  vinserti32x4    $0x3, %%xmm11, %%zmm8, %%zmm8
+  vmovups         %%zmm8, (%%rcx)
+
+  addq            $64, %%rcx                  // k += 4
+
+  // 交错数据，下一个K4
+  vpunpcklbw  %%zmm17, %%zmm16, %%zmm20
+  vpunpckhbw  %%zmm17, %%zmm16, %%zmm21
+  vpunpcklbw  %%zmm19, %%zmm18, %%zmm22
+  vpunpckhbw  %%zmm19, %%zmm18, %%zmm23
+
+  vpunpcklwd  %%zmm22, %%zmm20, %%zmm24
+  vpunpckhwd  %%zmm22, %%zmm20, %%zmm25
+  vpunpcklwd  %%zmm23, %%zmm21, %%zmm26
+  vpunpckhwd  %%zmm23, %%zmm21, %%zmm27
+
+  vextracti32x4   $0x1, %%zmm24, %%xmm28
+  vextracti32x4   $0x1, %%zmm25, %%xmm29
+  vextracti32x4   $0x1, %%zmm26, %%xmm30
+  vextracti32x4   $0x1, %%zmm27, %%xmm31
+  vinserti32x4    $0x1, %%xmm29, %%zmm28, %%zmm28
+  vinserti32x4    $0x2, %%xmm30, %%zmm28, %%zmm28
+  vinserti32x4    $0x3, %%xmm31, %%zmm28, %%zmm28
+  vmovups         %%zmm28, 1024(%%rcx)
+
+  vextracti32x4   $0x2, %%zmm24, %%xmm20
+  vextracti32x4   $0x2, %%zmm25, %%xmm21
+  vextracti32x4   $0x2, %%zmm26, %%xmm22
+  vextracti32x4   $0x2, %%zmm27, %%xmm23
+  vinserti32x4    $0x1, %%xmm21, %%zmm20, %%zmm20
+  vinserti32x4    $0x2, %%xmm22, %%zmm20, %%zmm20
+  vinserti32x4    $0x3, %%xmm23, %%zmm20, %%zmm20
+  vmovups         %%zmm20, 2048(%%rcx)
+
+  vextracti32x4   $0x3, %%zmm24, %%xmm16
+  vextracti32x4   $0x3, %%zmm25, %%xmm17
+  vextracti32x4   $0x3, %%zmm26, %%xmm18
+  vextracti32x4   $0x3, %%zmm27, %%xmm19
+  vinserti32x4    $0x1, %%xmm17, %%zmm16, %%zmm16
+  vinserti32x4    $0x2, %%xmm18, %%zmm16, %%zmm16
+  vinserti32x4    $0x3, %%xmm19, %%zmm16, %%zmm16
+  vmovups         %%zmm16, 3072(%%rcx)
+
+  vinserti32x4    $0x1, %%xmm25, %%zmm24, %%zmm24
+  vinserti32x4    $0x2, %%xmm26, %%zmm24, %%zmm24
+  vinserti32x4    $0x3, %%xmm27, %%zmm24, %%zmm24
+  vmovups         %%zmm24, (%%rcx)
+
+  addq            $64, %%rcx                  // k += 4
+
+.endm
+
+
+
+mov %[B], %%rbx
+mov %[Bc], %%rcx
+mov %[LN], %%rsi
+
+movq    %%rbx, %%r10
+
+PACKB_N64K8
+PACKB_N64K8
+PACKB_N64K8
+PACKB_N64K8
+PACKB_N64K8
+PACKB_N64K8
+PACKB_N64K8
+PACKB_N64K8
