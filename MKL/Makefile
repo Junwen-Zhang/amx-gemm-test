@@ -1,10 +1,10 @@
 # source /home/wangpy/zjw/intel/oneapi/setvars.sh
 BINARY_NAME = gemm
-CC			= /home/wangpy/zjw/intel/oneapi/2024.2/bin/dpcpp
+CC			= /home/wangpy/zjw/intel/oneapi/2025.0/bin/dpcpp
 CFLAGS		= -O2 -g -march=native -fno-strict-aliasing
 GDB_FLAGS = -gdwarf-5 -gstrict-dwarf
 
-MKLPATH		= /home/wangpy/zjw/intel/oneapi/mkl/2024.2
+MKLPATH		= /home/wangpy/zjw/intel/oneapi/mkl/2025.0
 LDFLAGS		= -L$(MKLPATH)/lib/intel64
 INCFLAGS	= -I$(MKLPATH)/include
 
